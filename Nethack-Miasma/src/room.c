@@ -55,7 +55,7 @@ Room* CreateRoom(int y, int x, int height, int width) {
 	NewRoom->doors[3].y = y + height + 1;
 
 	DrawGrid(75, 21);
-	mvprintw(80, 2, "Press h to get help.");
+
 
 	return NewRoom;
 }
@@ -70,12 +70,12 @@ int DrawRoom(Room* room) {
 	for (y = room->position.y; y < room->position.y + room->height; y++) {
 		mvprintw(y + 1, room->position.x - 1, "░");
 		mvprintw(y + 1, room->position.x + room->width, "░");
-		refresh();
 		for (x = room->position.x; x < room->position.x + room->width; x++) {
+
 			mvprintw(y + 1, x, ".");
-			refresh();
 		}
 	}
+	refresh();
 
 	for (int i = 0; i < 4; i++) {
 		if (i == 0 || i == 3) {
@@ -85,6 +85,7 @@ int DrawRoom(Room* room) {
 			mvprintw(room->doors[i].y, room->doors[i].x, "|");
 		}
 	}
+	refresh();
 }
 
 int ConnectDoors(Position* DoorA, Position* DoorB) {
