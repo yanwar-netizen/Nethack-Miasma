@@ -2,6 +2,7 @@
 #include <ncurses.h>
 #include <ctype.h>
 #include <time.h>
+#include <locale.h>
 
 typedef struct Position {
 	int x;
@@ -34,6 +35,7 @@ int main() {
 
 	int ch;
 	Player* user;
+	setlocale(LC_ALL, "");
 	// go to main screen
 	Screen();
 	clear();
@@ -137,12 +139,12 @@ int DrawRoom(Room* room) {
 	int x, y;
 	//I might want to change all these values in the future cro, it just works but looks just wrong ;-;
 	for (x = room->position.x; x < room->position.x + room->width + 2; x++) {
-		mvprintw(room->position.y, x-1, "-");
-		mvprintw(room->position.y + room->height + 1, x-1, "-");
+		mvprintw(room->position.y, x-1, "═");
+		mvprintw(room->position.y + room->height + 1, x-1, "═");
 	}
 	for (y = room->position.y; y < room->position.y + room->height; y++) {
-		mvprintw(y+1, room->position.x-1, "|");
-		mvprintw(y+1, room->position.x+room->width, "|");
+		mvprintw(y+1, room->position.x-1, "░");
+		mvprintw(y+1, room->position.x+room->width, "░");
 		refresh();
 		for (x = room->position.x; x < room->position.x + room->width; x++) {
 			mvprintw(y+1, x, ".");
@@ -151,7 +153,12 @@ int DrawRoom(Room* room) {
 	}
 
 	for (int i = 0; i < 4; i++) {
-		mvprintw(room->doors[i].y, room->doors[i].x, "+");
+		if (i == 0 || i == 3) {
+			mvprintw(room->doors[i].y, room->doors[i].x, "-");
+		}
+		else {
+			mvprintw(room->doors[i].y, room->doors[i].x, "|");
+		}
 	}
 }
 
@@ -185,11 +192,12 @@ int ConnectDoors(Position* DoorA, Position* DoorB) {
 }
 
 int MoveUser(int y, int x, Player* user) {
-
 	chtype mixedOldTile = mvinch(20, 34);
 	char OldTile = mixedOldTile & A_CHARTEXT;
 	mvaddch(20, 34, OldTile);
 	mvprintw(20, 10, "Current Standing Tile: ");
+
+
 
 	if (OldTile == ' '||OldTile == '\0') {
 		OldTile = '.';
@@ -200,6 +208,26 @@ int MoveUser(int y, int x, Player* user) {
 	char OldTile2 = mixedOldTile2 & A_CHARTEXT;
 
 	mvaddch(20, 34, OldTile2);
+	switch (OldTile2) {
+	case '.':
+		mvprintw(21, 10, "                    ");
+		refresh();
+		mvprintw(21, 10, "This is a Floor Tile");
+		break;
+	case '|':
+	case '-':
+		mvprintw(21, 10, "                    ");
+		refresh();
+		mvprintw(21, 10, "This is a Door");
+
+		break;
+	case '#':
+		mvprintw(21, 10, "                    ");
+		refresh();
+		mvprintw(21, 10, "This is a Path Tile");
+		break;
+	}
+
 
 	user->position.y = y;
 	user->position.x = x;
@@ -235,14 +263,28 @@ int ControlInput(char input, Player* user) {
 }
 
 int CheckPosition(int NewY, int NewX, Player* user) {
-	switch (mvinch(NewY, NewX)) {
-	case '+':
+	switch (mvinch(NewY, NewX) & A_CHARTEXT) {
+	case '|':
 	case '#':
 	case '.':
+	case '-':
 		MoveUser(NewY, NewX, user);
 		break;
 	default:
 		MoveUser(user->position.y, user->position.x, user);
 	}
+
+	/*chtype mixedChar = mvinch(NewY, NewX);
+	char cleanChar = mixedChar & A_CHARTEXT;
+	if (cleanChar ==  '|' || cleanChar == '#' || cleanChar == '.' || cleanChar == '-') {
+		MoveUser(NewY, NewX, user);
+	}
+	else {
+		MoveUser(user->position.y, user->position.x, user);
+	}*/
 	return 0;
+}
+int Seperator(chtype ch) {
+	char NewCh = ch & A_CHARTEXT;
+	return NewCh;
 }
