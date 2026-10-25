@@ -75,7 +75,7 @@ Room** Map(){
 	Room** rooms;
 	rooms = malloc(sizeof(Room) * 5);
 	// included only inner width and height
-	/**mvprintw(10, 5, " ------------- ");
+	/*mvprintw(10, 5, " ------------- ");
 	mvprintw(11, 5, "|.............|");
 	mvprintw(12, 5, "|.............|");
 	mvprintw(13, 5, "|.............|");
@@ -91,11 +91,12 @@ Room** Map(){
 	mvprintw(8, 20, "|..........|");
 	mvprintw(9, 20, " ----------");*/
 	rooms[1] = CreateRoom(5, 20, 3, 10);
-	DrawRoom(rooms[0]);
+	DrawRoom(rooms[1]);
 }
 
-Room* CreateRoom(int x, int y, int height, int width) {
+Room* CreateRoom(int y, int x, int height, int width) {
 	Room* NewRoom;
+	NewRoom = malloc(sizeof(Room));
 	NewRoom->xPosition = x;
 	NewRoom->yPosition = y;
 	NewRoom->height = height;
@@ -105,18 +106,17 @@ Room* CreateRoom(int x, int y, int height, int width) {
 
 int DrawRoom(Room* room) {
 	int x, y;
+	//I might want to change all these values in the future cro, it just works but looks just wrong ;-;
 	for (x = room->xPosition; x < room->xPosition + room->width; x++) {
 		mvprintw(room->yPosition, x, "-");
-		refresh();
-		mvprintw(room->yPosition + room->height, x, "-");
-		refresh();
+		mvprintw(room->yPosition + room->height + 1, x, "-");
 	}
 	for (y = room->yPosition; y < room->yPosition + room->height; y++) {
-		mvprintw(y, room->xPosition, "|");
-		mvprintw(y + room->width, room->xPosition, "|");
+		mvprintw(y+1, room->xPosition-1, "|");
+		mvprintw(y+1, room->xPosition+room->width, "|");
 		refresh();
 		for (x = room->xPosition; x < room->xPosition + room->width; x++) {
-			mvprintw(y, x, ".");
+			mvprintw(y+1, x, ".");
 			refresh();
 		}
 	}
