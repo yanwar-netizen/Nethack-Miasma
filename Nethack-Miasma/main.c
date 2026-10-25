@@ -1,17 +1,21 @@
 #include <stdlib.h>
 #include <ncurses.h>
 #include <ctype.h>
+#include <time.h>
 
+typedef struct Position {
+	int x;
+	int y;
+} Position;
 typedef struct Room {
-	int xPosition;
-	int yPosition;
+	Position position;
+	Position *doors;
 	int height;
 	int width;
 } Room;
 
 typedef struct Player {
-	int xPosition;
-	int yPosition;
+	Position position;
 	int Health;
 	int Mana;
 } Player;
@@ -23,6 +27,8 @@ int ControlInput(char input, Player* user);
 int CheckPosition(int NewY, int NewX, Player* user);
 Room* CreateRoom(int x, int y, int height, int width);
 int DrawRoom(Room* room);
+int ConnectDoors(Position* DoorA, Position* DoorB);
+int MoveUser(int y, int x, Player* user);
 
 int main() {
 	int ch;
@@ -48,11 +54,11 @@ int main() {
 Player* PlayerSetup() {
 	Player* NewPlayer;
 	NewPlayer = malloc(sizeof(Player));
-	NewPlayer->yPosition = 11;
-	NewPlayer->xPosition = 6;
+	NewPlayer->position.y = 11;
+	NewPlayer->position.x = 6;
 	NewPlayer->Health = 20;
 	NewPlayer->Mana = 10;
-	mvprintw(NewPlayer->yPosition, NewPlayer->xPosition, "@");
+	mvprintw(NewPlayer->position.y, NewPlayer->position.x, "@");
 	return NewPlayer;
 }
 
@@ -92,62 +98,113 @@ Room** Map(){
 	mvprintw(9, 20, " ----------");*/
 	rooms[1] = CreateRoom(5, 20, 3, 10);
 	DrawRoom(rooms[1]);
+
+	ConnectDoors(&rooms[0]->doors[1], &rooms[1]->doors[3]);
 }
 
 Room* CreateRoom(int y, int x, int height, int width) {
 	Room* NewRoom;
 	NewRoom = malloc(sizeof(Room));
-	NewRoom->xPosition = x;
-	NewRoom->yPosition = y;
+	NewRoom->position.x = x;
+	NewRoom->position.y = y;
 	NewRoom->height = height;
 	NewRoom->width = width;
+	NewRoom->doors = malloc(sizeof(Position) * 4);
+
+	srand(time(NULL));
+	NewRoom->doors[0].x = x + (rand() % width); //top
+	NewRoom->doors[0].y = y;
+
+	NewRoom->doors[1].x = x + width; //right
+	NewRoom->doors[1].y = y + 1 + (rand() % height);
+
+	NewRoom->doors[2].x = x - 1; //left
+	NewRoom->doors[2].y = y + 1 + (rand() %  height);
+
+	NewRoom->doors[3].x = x + (rand() % width); //bottom
+	NewRoom->doors[3].y = y + height + 1;
+
+
 	return NewRoom;
 }
 
 int DrawRoom(Room* room) {
 	int x, y;
 	//I might want to change all these values in the future cro, it just works but looks just wrong ;-;
-	for (x = room->xPosition; x < room->xPosition + room->width; x++) {
-		mvprintw(room->yPosition, x, "-");
-		mvprintw(room->yPosition + room->height + 1, x, "-");
+	for (x = room->position.x; x < room->position.x + room->width; x++) {
+		mvprintw(room->position.y, x, "-");
+		mvprintw(room->position.y + room->height + 1, x, "-");
 	}
-	for (y = room->yPosition; y < room->yPosition + room->height; y++) {
-		mvprintw(y+1, room->xPosition-1, "|");
-		mvprintw(y+1, room->xPosition+room->width, "|");
+	for (y = room->position.y; y < room->position.y + room->height; y++) {
+		mvprintw(y+1, room->position.x-1, "|");
+		mvprintw(y+1, room->position.x+room->width, "|");
 		refresh();
-		for (x = room->xPosition; x < room->xPosition + room->width; x++) {
+		for (x = room->position.x; x < room->position.x + room->width; x++) {
 			mvprintw(y+1, x, ".");
 			refresh();
 		}
 	}
+
+	for (int i = 0; i < 4; i++) {
+		mvprintw(room->doors[i].y, room->doors[i].x, "+");
+	}
+}
+
+int ConnectDoors(Position* DoorA, Position* DoorB) {
+	Position temp;
+
+	temp.x = DoorA->x;
+	temp.y = DoorA->y;
+
+	while (1) {
+		if ((abs((temp.x - 1) - DoorB->x) < abs(temp.x - DoorB->x)) && (mvinch(DoorA->y, DoorB->x-1) == ' ')) { //left
+			mvprintw(temp.y , temp.x - 1, "#");
+			temp.x--;
+		}
+		else if ((abs((temp.x +1 ) - DoorB->x) < abs(temp.x - DoorB->x)) && (mvinch(temp.y, temp.x+1) == ' ')) { //right
+			mvprintw(temp.y, temp.x + 1, "#");
+			temp.x++;
+		}
+		else if ((abs((temp.y - 1) - DoorB->y) < abs(temp.y - DoorB->y)) && (mvinch(temp.y-1 , temp.x) == ' ')) {  //top
+			mvprintw(temp.y - 1, temp.x, "#");
+			temp.y--;
+		}
+		else if ((abs((temp.y + 1) - DoorB->y) < abs(temp.y - DoorB->y)) && (mvinch(temp.y+1, temp.x) == ' ')) {  //bottom
+			mvprintw(temp.y+1, temp.x, "#");
+			temp.y++;
+		}
+		else {
+			return 0;
+		}
+	}
 }
 int MoveUser(int y, int x, Player* user) {
-	mvprintw(user->yPosition, user->xPosition, ".");
-	user->yPosition = y;
-	user->xPosition = x;
-	mvprintw(user->yPosition, user->xPosition, "@");
+	mvprintw(user->position.y, user->position.x, ".");
+	user->position.y = y;
+	user->position.x = x;
+	mvprintw(user->position.y, user->position.x, "@");
 	refresh();
-	move(user->yPosition, user->xPosition);
+	move(user->position.y, user->position.x);
 	return 0;
 }
 int ControlInput(char input, Player* user) {
 	int NewX, NewY;
 	switch (input) {
 	case 'w':
-		NewY = user->yPosition - 1;
-		NewX = user->xPosition;
+		NewY = user->position.y - 1;
+		NewX = user->position.x;
 		break;
 	case 'a':
-		NewY = user->yPosition;
-		NewX = user->xPosition-1;
+		NewY = user->position.y;
+		NewX = user->position.x-1;
 		break;
 	case 's':
-		NewY = user->yPosition+1;
-		NewX = user->xPosition;
+		NewY = user->position.y+1;
+		NewX = user->position.x;
 		break;
 	case 'd':
-		NewY = user->yPosition;
-		NewX = user->xPosition+1;
+		NewY = user->position.y;
+		NewX = user->position.x+1;
 		break;
 	default:
 		return 0;
@@ -157,11 +214,13 @@ int ControlInput(char input, Player* user) {
 
 int CheckPosition(int NewY, int NewX, Player* user) {
 	switch (mvinch(NewY, NewX)) {
+	case '+':
+	case '#':
 	case '.':
 		MoveUser(NewY, NewX, user);
 		break;
 	default:
-		MoveUser(user->yPosition, user->xPosition, user);
+		MoveUser(user->position.y, user->position.x, user);
 	}
 	return 0;
 }
