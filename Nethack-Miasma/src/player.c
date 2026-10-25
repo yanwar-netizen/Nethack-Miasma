@@ -16,7 +16,8 @@ int MoveUser(int y, int x, Player* user) {
 	chtype mixedOldTile = mvinch(20, 34);
 	char OldTile = mixedOldTile & A_CHARTEXT;
 	mvaddch(20, 34, OldTile);
-	mvprintw(20, 10, "Current Standing Tile: ");
+	mvprintw(20, 10, "Current Standing Tile: [ ] ");
+	mvprintw(21, 10, "press h for help.");
 
 	if (OldTile == ' ' || OldTile == '\0') {
 		OldTile = '.';
@@ -47,8 +48,6 @@ int MoveUser(int y, int x, Player* user) {
 			mvprintw(21, 10, "This is a Path Tile.");
 		break;
 	}
-	mvprintw(70, 2, "Press h to get help.");
-
 	user->position.y = y;
 	user->position.x = x;
 	mvprintw(user->position.y, user->position.x, "@");
