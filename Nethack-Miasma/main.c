@@ -31,6 +31,7 @@ int ConnectDoors(Position* DoorA, Position* DoorB);
 int MoveUser(int y, int x, Player* user);
 
 int main() {
+
 	int ch;
 	Player* user;
 	// go to main screen
@@ -67,7 +68,7 @@ int Screen() {
 	noecho();
 	cbreak();
 
-	printw("-----------------\n| Nethack-Miasma | \n-----------------");
+	printw(" -----------------\n| Nethack-Miasma | \n -----------------");
 	refresh();
 	printw("\n\n ...Dark Miasma is seeping from the depths of the dungeon...");
 	refresh();
@@ -98,8 +99,12 @@ Room** Map(){
 	mvprintw(9, 20, " ----------");*/
 	rooms[1] = CreateRoom(5, 20, 3, 10);
 	DrawRoom(rooms[1]);
+	rooms[2] = CreateRoom(13, 33, 4, 13);
+	DrawRoom(rooms[2]);
 
 	ConnectDoors(&rooms[0]->doors[1], &rooms[1]->doors[3]);
+	ConnectDoors(&rooms[0]->doors[0], &rooms[1]->doors[2]);
+	ConnectDoors(&rooms[1]->doors[1], &rooms[2]->doors[0]);
 }
 
 Room* CreateRoom(int y, int x, int height, int width) {
@@ -131,9 +136,9 @@ Room* CreateRoom(int y, int x, int height, int width) {
 int DrawRoom(Room* room) {
 	int x, y;
 	//I might want to change all these values in the future cro, it just works but looks just wrong ;-;
-	for (x = room->position.x; x < room->position.x + room->width; x++) {
-		mvprintw(room->position.y, x, "-");
-		mvprintw(room->position.y + room->height + 1, x, "-");
+	for (x = room->position.x; x < room->position.x + room->width + 2; x++) {
+		mvprintw(room->position.y, x-1, "-");
+		mvprintw(room->position.y + room->height + 1, x-1, "-");
 	}
 	for (y = room->position.y; y < room->position.y + room->height; y++) {
 		mvprintw(y+1, room->position.x-1, "|");
@@ -178,8 +183,24 @@ int ConnectDoors(Position* DoorA, Position* DoorB) {
 		}
 	}
 }
+
 int MoveUser(int y, int x, Player* user) {
-	mvprintw(user->position.y, user->position.x, ".");
+
+	chtype mixedOldTile = mvinch(20, 34);
+	char OldTile = mixedOldTile & A_CHARTEXT;
+	mvaddch(20, 34, OldTile);
+	mvprintw(20, 10, "Current Standing Tile: ");
+
+	if (OldTile == ' '||OldTile == '\0') {
+		OldTile = '.';
+	}
+	mvaddch(user->position.y, user->position.x, OldTile);
+
+	chtype mixedOldTile2 = mvinch(y, x);
+	char OldTile2 = mixedOldTile2 & A_CHARTEXT;
+
+	mvaddch(20, 34, OldTile2);
+
 	user->position.y = y;
 	user->position.x = x;
 	mvprintw(user->position.y, user->position.x, "@");
@@ -187,6 +208,7 @@ int MoveUser(int y, int x, Player* user) {
 	move(user->position.y, user->position.x);
 	return 0;
 }
+
 int ControlInput(char input, Player* user) {
 	int NewX, NewY;
 	switch (input) {
