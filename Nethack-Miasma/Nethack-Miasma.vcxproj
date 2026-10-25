@@ -74,10 +74,17 @@
   <ImportGroup Label="Shared" />
   <ImportGroup Label="PropertySheets" />
   <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ProjectPublicIncludePath>include</ProjectPublicIncludePath>
+  </PropertyGroup>
   <ItemGroup>
-    <ClCompile Include="main.c" />
+    <ClCompile Include="src\main.c" />
+    <ClCompile Include="makefile" />
+    <ClCompile Include="src\room.c" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="include\miasma.h" />
+    <ClInclude Include="src\player.c" />
   </ItemGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <Link>
