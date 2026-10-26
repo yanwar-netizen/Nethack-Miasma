@@ -27,3 +27,7 @@ a.out
 Thumbs.db
 ehthumbs.db
 Desktop.ini
+
+*.vcxproj
+*.slnx
+.sln
