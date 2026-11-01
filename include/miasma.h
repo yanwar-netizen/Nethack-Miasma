@@ -6,6 +6,7 @@
 #include <ctype.h>
 #include <time.h>
 #include <locale.h>
+#include <string.h>
 
 typedef struct Floor {
 	int floor;
@@ -49,6 +50,7 @@ typedef struct Monster {
 	int health;
 	char* avatar; 
 	int movement;
+	int speed;
 
 } Monster;
 
@@ -76,7 +78,7 @@ int ConnectDoors(Position* DoorA, Position* DoorB);
 //monsters 
 int addMonsters(Floor* floor);
 Monster* selectMonster(int floor);
-Monster* createMonster(char* avatar, int health, int movement);
+Monster* createMonster(char* avatar, int health, int movement, int speed);
 int monsterPos(Monster* monster, Room* room);
 
 //monster movements

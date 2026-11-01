@@ -29,6 +29,8 @@ Room* CreateRoom(int y, int x, int height, int width) {
 int DrawRoom(Room* room) {
 	int x, y;
 	//I might want to change all these values in the future cro, it just works but looks just wrong ;-;
+
+	attron(COLOR_PAIR(2));
 	for (x = room->position.x; x < room->position.x + room->width + 2; x++) {
 		mvprintw(room->position.y, x - 1, "═");
 		mvprintw(room->position.y + room->height + 1, x - 1, "═");
@@ -42,7 +44,9 @@ int DrawRoom(Room* room) {
 			mvprintw(y + 1, x, ".");
 		}
 	}
+	attroff(COLOR_PAIR(2));
 
+	attron(COLOR_PAIR(3));
 	for (int i = 0; i < 4; i++) {
 		if (i == 0 || i == 3) {
 			mvprintw(room->doors[i].y, room->doors[i].x, "-");
@@ -51,6 +55,7 @@ int DrawRoom(Room* room) {
 			mvprintw(room->doors[i].y, room->doors[i].x, "|");
 		}
 	}
+	attroff(COLOR_PAIR(3));
 	refresh();
 }
 

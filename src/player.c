@@ -73,7 +73,8 @@ int MoveUser(Position* newPosition, Player* user, cchar_t** floor) {
 
 	user->position->x = newPosition->x;
 	user->position->y = newPosition->y;
-
+	attron(COLOR_PAIR(4));
 	mvprintw(user->position->y, user->position->x, "@");
 	move(user->position->y, user->position->x);
+	attroff(COLOR_PAIR(4));
 }
