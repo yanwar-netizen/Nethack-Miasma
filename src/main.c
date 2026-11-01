@@ -2,28 +2,24 @@
 
 int main() {
 
+	Player* user;
 	int ch;
-	Player *user;
 	Position* newPosition;
 
-	chtype** floor;
-	setlocale(LC_ALL, "");
+	Floor* floor;
 
 	// go to main screen
 	Screen();
 	clear();
 
-	// go to the map
-	Map();
-	floor = saveFloor();
+	floor = createFloor(3);
 
-	mvaddch(0, 0, floor[7][42]);
 	// intialise the user settings
 	user = PlayerSetup();
 
 	while ((ch = getch()) != 'q') {
 		newPosition = ControlInput(ch, user);
-		CheckPosition(newPosition, user, floor);
+		CheckPosition(newPosition, user, floor->tiles);
 	}
 
 	//end game
@@ -35,12 +31,9 @@ int main() {
 
 int Screen() {
 
+	setlocale(LC_ALL, "");
+
 	initscr();
-	/*if (has_colors() == FALSE) {
-		endwin();
-		printf("Your terminal doesn't support colors!");
-		exit(1);
-	}*/
 	noecho();
 	cbreak();
 	start_color();
@@ -56,11 +49,3 @@ int Screen() {
 	
 	return 0;
 }
-
-/*int HelpScreen() {
-	clear();
-	printw("Movement buttons: \nW for Up, S for down, A for left, D for left.");
-	printw("Exit button: Press q to exit.");
-	getch();
-	return 1;
-}*/

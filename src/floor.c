@@ -1,6 +1,19 @@
 #include "miasma.h"
 
-Room** Map() {
+Floor* createFloor(int floor) {
+
+	Floor* newFloor = malloc(sizeof(Floor));
+
+	newFloor->floor = floor;
+	newFloor->roomNos = 4;
+	newFloor->monsterNos = 2;
+	newFloor->room = RoomSetup();
+	newFloor->tiles = saveFloor();
+
+	return newFloor;
+}
+//control area for room & door setup
+Room** RoomSetup() {
 	Room** rooms;
 	rooms = malloc(sizeof(Room*) * 8);
 	// included only inner width and height
@@ -22,14 +35,18 @@ Room** Map() {
 	return rooms;
 }
 
+//save tiles
 chtype** saveFloor() {
+
 	chtype** position;
 	position = malloc(sizeof(chtype*) * 100);
+
 	for (int y= 0; y < 100; y++) {
 		position[y] = malloc(sizeof(chtype)*100);
 		for (int x = 0; x < 100; x++) {
 			position[y][x] = mvinch(y, x);
 		}
 	}
+
 	return position;
 }

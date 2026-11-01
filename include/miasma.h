@@ -6,6 +6,16 @@
 #include <time.h>
 #include <locale.h>
 
+typedef struct Floor {
+	int floor;
+	int roomNos;
+	int monsterNos;
+	chtype** tiles;
+
+	struct Room** room;
+	struct Monster** monster;
+}Floor;
+
 typedef struct Position {
 
 	int x;
@@ -30,8 +40,13 @@ typedef struct Player {
 
 } Player;
 
+typedef struct Monster {
+	Position position;
+	int Health;
+} Monster;
+
+//main function
 int Screen();
-int HelpScreen();
 
 //For player setup
 Player* PlayerSetup();
@@ -39,14 +54,19 @@ Position* ControlInput(char input, Player* user);
 int CheckPosition(Position *newPosition, Player* user, chtype **floor);
 int MoveUser(Position *newPosition, Player* user, chtype **floor);
 
+//floor
+Floor* createFloor(int floor);
+
 //For room setup
-Room** Map();
+Room** RoomSetup();
 chtype** saveFloor();
 
+//functions to implement the setup room
 Room* CreateRoom(int x, int y, int height, int width);
 int DrawRoom(Room* room);
 int ConnectDoors(Position* DoorA, Position* DoorB);
 
+//extra
 int DrawGrid(int x, int y);
 
 

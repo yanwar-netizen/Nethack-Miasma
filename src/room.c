@@ -22,9 +22,6 @@ Room* CreateRoom(int y, int x, int height, int width) {
 	NewRoom->doors[3].x = x + (rand() % width); //bottom
 	NewRoom->doors[3].y = y + height + 1;
 
-	//DrawGrid(75, 21);
-
-
 	return NewRoom;
 }
 
@@ -35,6 +32,7 @@ int DrawRoom(Room* room) {
 		mvprintw(room->position.y, x - 1, "═");
 		mvprintw(room->position.y + room->height + 1, x - 1, "═");
 	}
+
 	for (y = room->position.y; y < room->position.y + room->height; y++) {
 		mvprintw(y + 1, room->position.x - 1, "░");
 		mvprintw(y + 1, room->position.x + room->width, "░");
@@ -43,7 +41,6 @@ int DrawRoom(Room* room) {
 			mvprintw(y + 1, x, ".");
 		}
 	}
-	refresh();
 
 	for (int i = 0; i < 4; i++) {
 		if (i == 0 || i == 3) {
@@ -98,15 +95,3 @@ int ConnectDoors(Position* DoorA, Position* DoorB) {
 	}
 }
 
-/*int DrawGrid(int x, int y) {
-	for (int i = 0; i < y-3; i++) {
-		mvprintw(i+2, 2, "|");
-		mvprintw(i+2, x-2, "|");
-	}
-	for (int j = 3; j < x; j++) {
-		mvprintw(2, j-1, "-");
-		mvprintw(y-2, j-1, "-");
-	}
-
-	return 1;
-}*/

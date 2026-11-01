@@ -7,13 +7,16 @@ Player* PlayerSetup() {
 	NewPlayer->position.x = 6;
 	NewPlayer->Health = 20;
 	NewPlayer->Mana = 10;
+
 	mvprintw(NewPlayer->position.y, NewPlayer->position.x, "@");
 	move(NewPlayer->position.y, NewPlayer->position.x);
+
 	return NewPlayer;
 }
 
 
 Position *ControlInput(char input, Player* user) {
+	
 	Position  *newPosition;
 	newPosition = malloc(sizeof(Position));
 
@@ -61,14 +64,6 @@ int CheckPosition(Position *newPosition, Player* user, chtype** floor) {
 
 	free(newPosition);
 
-	/*chtype mixedChar = mvinch(NewY, NewX);
-	char cleanChar = mixedChar & A_CHARTEXT;
-	if (cleanChar ==  '|' || cleanChar == '#' || cleanChar == '.' || cleanChar == '-') {
-		MoveUser(NewY, NewX, user);
-	}
-	else {
-		MoveUser(user->position.y, user->position.x, user);
-	}*/
 	return 0;
 }
 
