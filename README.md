@@ -2,7 +2,7 @@
 
 Heyyo, this a classic nethack game made in C using ncurses, Nethack-Miasma!
 
-There are 4 rooms on the map, they are the same on the same coordinates and size everyrun, only the doors and walk paths(somewhat) are randomized.
+There are 4 rooms on the map, they are on the same coordinates and size every run, only the doors and walk paths(somewhat) are randomized.
 
 
 **REQUIREMENTS:**
@@ -36,6 +36,6 @@ What do you even do in the game? *I dont know what you can do other than walking
 
 2.) Implement random number of rooms with varying size on every run.
 
-3.) Fix the path finding algorithm.
+3.) Fix the path finding algorithms.
 
 4.) Implement multiple floors. Lets do this first and add other features later!

@@ -3,7 +3,10 @@
 int main() {
 
 	int ch;
-	Player* user;
+	Player *user;
+	Position* newPosition;
+
+	chtype** floor;
 	setlocale(LC_ALL, "");
 
 	// go to main screen
@@ -12,13 +15,15 @@ int main() {
 
 	// go to the map
 	Map();
+	floor = saveFloor();
 
+	mvaddch(0, 0, floor[7][42]);
 	// intialise the user settings
 	user = PlayerSetup();
 
 	while ((ch = getch()) != 'q') {
-		ch = tolower(ch);
-		ControlInput(ch, user);
+		newPosition = ControlInput(ch, user);
+		CheckPosition(newPosition, user, floor);
 	}
 
 	//end game
@@ -39,9 +44,6 @@ int Screen() {
 	noecho();
 	cbreak();
 	start_color();
-
-	init_pair(1, COLOR_YELLOW, COLOR_BLACK);
-	init_pair(2, COLOR_CYAN, COLOR_BLACK);
 
 	printw(" -----------------\n| Nethack-Miasma | \n -----------------");
 	refresh();

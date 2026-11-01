@@ -35,12 +35,14 @@ int HelpScreen();
 
 //For player setup
 Player* PlayerSetup();
-int ControlInput(char input, Player* user);
-int CheckPosition(int NewY, int NewX, Player* user);
-int MoveUser(int y, int x, Player* user);
+Position* ControlInput(char input, Player* user);
+int CheckPosition(Position *newPosition, Player* user, chtype **floor);
+int MoveUser(Position *newPosition, Player* user, chtype **floor);
 
 //For room setup
 Room** Map();
+chtype** saveFloor();
+
 Room* CreateRoom(int x, int y, int height, int width);
 int DrawRoom(Room* room);
 int ConnectDoors(Position* DoorA, Position* DoorB);
