@@ -15,7 +15,9 @@ typedef struct Floor {
 
 	struct Room** rooms;
 	struct Monster** monsters;
-}Floor;
+	struct Player* user;
+
+} Floor;
 
 typedef struct Position {
 
@@ -35,16 +37,19 @@ typedef struct Room {
 
 typedef struct Player {
 	
-	Position position;
+	Position* position;
 	int Health;
 	int Mana;
 
 } Player;
 
 typedef struct Monster {
-	Position position;
+
+	Position* position;
 	int health;
-	char* avatar;
+	char* avatar; 
+	int movement;
+
 } Monster;
 
 //main function
@@ -71,8 +76,13 @@ int ConnectDoors(Position* DoorA, Position* DoorB);
 //monsters 
 int addMonsters(Floor* floor);
 Monster* selectMonster(int floor);
-Monster* createMonster(char* avatar, int health);
+Monster* createMonster(char* avatar, int health, int movement);
 int monsterPos(Monster* monster, Room* room);
+
+//monster movements
+int moveMonsters(Floor* floor);
+int movementSeeking(Position* start, Position* destination);
+int movementRandom(Position* start);
 
 
 #endif

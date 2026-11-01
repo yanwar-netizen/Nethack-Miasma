@@ -2,7 +2,6 @@
 
 int main() {
 
-	Player* user;
 	int ch;
 	Position* newPosition;
 
@@ -15,11 +14,12 @@ int main() {
 	floor = createFloor(5);
 
 	// intialise the user settings
-	user = PlayerSetup();
+	floor->user = PlayerSetup();
 
-	while ((ch = getch()) != 'q') {
-		newPosition = ControlInput(ch, user);
-		CheckPosition(newPosition, user, floor->tiles);
+	while ((ch = tolower(getch())) != 'q') {
+		newPosition = ControlInput(ch, floor->user);
+		CheckPosition(newPosition, floor->user, floor->tiles);
+		moveMonsters(floor);
 	}
 
 	//end game
