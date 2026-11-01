@@ -12,7 +12,7 @@ int main() {
 	Screen();
 	clear();
 
-	floor = createFloor(3);
+	floor = createFloor(5);
 
 	// intialise the user settings
 	user = PlayerSetup();

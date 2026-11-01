@@ -1,5 +1,6 @@
 #ifndef H_MIASMA
 #define H_MIASMA
+#define _XOPEN_SOURCE_EXTENDED 1
 #include <stdlib.h>
 #include <ncurses.h>
 #include <ctype.h>
@@ -10,10 +11,10 @@ typedef struct Floor {
 	int floor;
 	int roomNos;
 	int monsterNos;
-	chtype** tiles;
+	cchar_t** tiles;
 
-	struct Room** room;
-	struct Monster** monster;
+	struct Room** rooms;
+	struct Monster** monsters;
 }Floor;
 
 typedef struct Position {
@@ -42,7 +43,8 @@ typedef struct Player {
 
 typedef struct Monster {
 	Position position;
-	int Health;
+	int health;
+	char* avatar;
 } Monster;
 
 //main function
@@ -51,23 +53,26 @@ int Screen();
 //For player setup
 Player* PlayerSetup();
 Position* ControlInput(char input, Player* user);
-int CheckPosition(Position *newPosition, Player* user, chtype **floor);
-int MoveUser(Position *newPosition, Player* user, chtype **floor);
+int CheckPosition(Position *newPosition, Player* user, cchar_t** floor);
+int MoveUser(Position *newPosition, Player* user, cchar_t** floor);
 
 //floor
 Floor* createFloor(int floor);
 
 //For room setup
 Room** RoomSetup();
-chtype** saveFloor();
+cchar_t** saveFloor();
 
 //functions to implement the setup room
 Room* CreateRoom(int x, int y, int height, int width);
 int DrawRoom(Room* room);
 int ConnectDoors(Position* DoorA, Position* DoorB);
 
-//extra
-int DrawGrid(int x, int y);
+//monsters 
+int addMonsters(Floor* floor);
+Monster* selectMonster(int floor);
+Monster* createMonster(char* avatar, int health);
+int monsterPos(Monster* monster, Room* room);
 
 
 #endif

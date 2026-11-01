@@ -7,8 +7,10 @@ Floor* createFloor(int floor) {
 	newFloor->floor = floor;
 	newFloor->roomNos = 4;
 	newFloor->monsterNos = 2;
-	newFloor->room = RoomSetup();
+	newFloor->rooms = RoomSetup();
 	newFloor->tiles = saveFloor();
+
+	addMonsters(newFloor);
 
 	return newFloor;
 }
@@ -36,15 +38,15 @@ Room** RoomSetup() {
 }
 
 //save tiles
-chtype** saveFloor() {
+cchar_t** saveFloor() {
 
-	chtype** position;
-	position = malloc(sizeof(chtype*) * 100);
+	cchar_t** position;
+	position = malloc(sizeof(cchar_t*) * 100);
 
 	for (int y= 0; y < 100; y++) {
-		position[y] = malloc(sizeof(chtype)*100);
+		position[y] = malloc(sizeof(cchar_t)*100);
 		for (int x = 0; x < 100; x++) {
-			position[y][x] = mvinch(y, x);
+			mvin_wch(y, x, &position[y][x]);
 		}
 	}
 

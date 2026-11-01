@@ -49,7 +49,7 @@ Position *ControlInput(char input, Player* user) {
 	return newPosition;
 }
 
-int CheckPosition(Position *newPosition, Player* user, chtype** floor) {
+int CheckPosition(Position *newPosition, Player* user, cchar_t** floor) {
 
 	switch (mvinch(newPosition->y, newPosition->x) & A_CHARTEXT) {
 		case '|':
@@ -67,12 +67,9 @@ int CheckPosition(Position *newPosition, Player* user, chtype** floor) {
 	return 0;
 }
 
-int MoveUser(Position* newPosition, Player* user, chtype** floor) {
-	char buffer[8];
+int MoveUser(Position* newPosition, Player* user, cchar_t** floor) {
 
-	sprintf(buffer, "%c", floor[user->position.y][user->position.x]);
-
-	mvprintw(user->position.y, user->position.x, "%s",buffer);
+	mvadd_wch(user->position.y, user->position.x, &floor[user->position.y][user->position.x]);
 
 	user->position.x = newPosition->x;
 	user->position.y = newPosition->y;

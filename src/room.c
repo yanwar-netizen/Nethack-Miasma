@@ -1,6 +1,7 @@
 #include "miasma.h"
 
 Room* CreateRoom(int y, int x, int height, int width) {
+
 	Room* NewRoom;
 	NewRoom = malloc(sizeof(Room));
 	NewRoom->position.x = x;
