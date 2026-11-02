@@ -22,11 +22,13 @@ You need a linux environment or wsl to run the AppImage file.
 
 1.) After you run the file, you will be prompted to the Title screen of the game, Press any key to Continue to the map!
 
-2.) `@` is you, the player. The `░ ═` are walls, while the `_` `|` are doors
+2.) `@` is you, the player. The `░ ═` are walls, while the `_` `|` are doors.
 
-1.) **WASD** for movement.
+3.) `G`, `⌠` and `α` are monsters'.
 
-2.) **Q** to quit.
+4.) **WASD** for movement.
+
+5.) **Q** to quit.
 
 What do you even do in the game? *I dont know what you can do other than walking in the game for now* 
 
