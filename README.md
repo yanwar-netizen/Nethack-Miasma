@@ -41,3 +41,7 @@ What do you even do in the game? *I dont know what you can do other than walking
 3.) Fix the path finding algorithms.
 
 4.) Implement multiple floors. Lets do this first and add other features later!
+
+Credits:
+
+This game was based on Rogue/Nethack RPG in C tutorial by badcodinghabits on YouTube! Special thanks to him.
