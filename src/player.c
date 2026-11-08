@@ -7,8 +7,9 @@ Player* PlayerSetup() {
 	NewPlayer->position = malloc(sizeof(Position));
 	NewPlayer->position->y = 11;
 	NewPlayer->position->x = 6;
-	NewPlayer->Health = 20;
-	NewPlayer->Mana = 10;
+	NewPlayer->health = 20;
+	NewPlayer->mana = 10;
+	NewPlayer->attack = 5;
 
 	mvprintw(NewPlayer->position->y, NewPlayer->position->x, "@");
 	move(NewPlayer->position->y, NewPlayer->position->x);
@@ -49,14 +50,28 @@ Position *ControlInput(char input, Player* user) {
 	return newPosition;
 }
 
-int CheckPosition(Position *newPosition, Player* user, cchar_t** floor) {
+int CheckPosition(Position *newPosition, Floor * floor) {
 
+	for(int i = 0; i < floor->monsterNos; i++){
+		if (floor->monsters[i]->alive==0){
+			continue;
+		}
+		if (floor->monsters[i]->position->x == newPosition->x && floor->monsters[i]->position->y == newPosition->y){
+			combat(floor->user, floor->monsters[i], 1);
+
+			if(floor->monsters[i]->alive == 0){
+				setcchar(&floor->tiles[newPosition->y][newPosition->x], L".", A_NORMAL, floor->monsters[i]->color, NULL);
+				return 1;
+			}
+		}
+	}
+        
 	switch (mvinch(newPosition->y, newPosition->x) & A_CHARTEXT) {
 		case '|':
 		case '#':
 		case '.':
 		case '-':
-			MoveUser(newPosition, user, floor);
+			MoveUser(newPosition, floor->user, floor->tiles);
 			break;
 		default:
 			break;

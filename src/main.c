@@ -21,7 +21,7 @@ int main() {
 		mvprintw(20, 0, "Those in red and green are monsters, they do not do anything... for now.");
 
 		newPosition = ControlInput(ch, floor->user);
-		CheckPosition(newPosition, floor->user, floor->tiles);
+		CheckPosition(newPosition, floor);
 		moveMonsters(floor);
 		move(floor->user->position->y, floor->user->position->x);
 	}

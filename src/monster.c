@@ -15,6 +15,7 @@ int addMonsters(Floor* floor) {
 			floor->monsterNos++;
 		}
 	}
+	return 1;
 }
 
 Monster* selectMonster(int floor) {
@@ -36,24 +37,27 @@ Monster* selectMonster(int floor) {
 
 	switch (monster) {
 	case 1:
-		return createMonster("⌠", 5, 0, 1);  //vermin
+		return createMonster("⌠", 5, 1, 0, 1, 1);  //vermin
 	case 2:
-		return createMonster("α", 8, 0, 2); //mouse
+		return createMonster("α", 8, 2, 0, 2, 1); //mouse
 	case 3:
-		return createMonster("G", 12, 1, 2);
+		return createMonster("G", 12, 4, 1, 2, 5); //goblin
 	default:
-		return createMonster("⌠", 5, 0, 2);
+		return createMonster("⌠", 5, 1, 0, 2, 1);  //slightly stronger vermin
 	}
 }
 
-Monster* createMonster(char* avatar, int health, int movement, int speed) {
+Monster* createMonster(char* avatar, int health,int attack, int movement, int speed, int color) {
 	Monster* newMonster;
 	newMonster = malloc(sizeof(Monster));
-
+	
+	newMonster->alive = 1;
 	newMonster->avatar = avatar;
 	newMonster->health = health;
+	newMonster->attack = attack;
 	newMonster->movement = movement;
 	newMonster->speed = speed;
+	newMonster->color = color;
 
 	return newMonster;
 }
@@ -62,21 +66,24 @@ int monsterPos(Monster* monster, Room* room) {
 	monster->position->x = rand() % (room->width-2) + room->position.x + 1;
 	monster->position->y = rand() % (room->height-2) + room->position.y + 1;
 	if (strcmp(monster->avatar, "G") != 0) {
-		attron(COLOR_PAIR(1));
+		attron(COLOR_PAIR(monster->color));
 		mvprintw(monster->position->y, monster->position->x, "%s", monster->avatar);
-		attroff(COLOR_PAIR(1));
+		attroff(COLOR_PAIR(monster->color));
 	}
 	else {
-		attron(COLOR_PAIR(5));
+		attron(COLOR_PAIR(monster->color));
 		mvprintw(monster->position->y, monster->position->x, "%s", monster->avatar);
-		attroff(COLOR_PAIR(5));
+		attroff(COLOR_PAIR(monster->color));
 	}
+	return 1;
 }
 
 int moveMonsters(Floor* floor) {
 
 	for (int x = 0; x < floor->monsterNos; x++) {
-
+		if(floor->monsters[x]->alive == 0){
+			continue;
+		}
 		int oldX = floor->monsters[x]->position->x;
 		int oldY = floor->monsters[x]->position->y;
 		mvadd_wch(oldY, oldX, &floor->tiles[oldY][oldX]);
@@ -86,18 +93,18 @@ int moveMonsters(Floor* floor) {
 			movementRandom(floor->monsters[x]->position);
 
 			if ((mvinch(floor->monsters[x]->position->y, floor->monsters[x]->position->x) & A_CHARTEXT) == '.') {
-				attron(COLOR_PAIR(1));
+				attron(COLOR_PAIR(floor->monsters[x]->color));
 				mvprintw(floor->monsters[x]->position->y, floor->monsters[x]->position->x, "%s", floor->monsters[x]->avatar);
-				attroff(COLOR_PAIR(1));
+				attroff(COLOR_PAIR(floor->monsters[x]->color));
 			}
 
 			else {
 
 				floor->monsters[x]->position->y = oldY;
 				floor->monsters[x]->position->x = oldX;
-				attron(COLOR_PAIR(1));
+				attron(COLOR_PAIR(floor->monsters[x]->color));
 				mvprintw(oldY, oldX, "%s", floor->monsters[x]->avatar);
-				attroff(COLOR_PAIR(1));
+				attroff(COLOR_PAIR(floor->monsters[x]->color));
 			}
 		}
 
@@ -106,9 +113,9 @@ int moveMonsters(Floor* floor) {
 			int oldY = floor->monsters[x]->position->y;
 			mvadd_wch(oldY, oldX, &floor->tiles[oldY][oldX]);
 			movementSeeking(floor->monsters[x]->position, floor->user->position);
-			attron(COLOR_PAIR(5));
+			attron(COLOR_PAIR(floor->monsters[x]->color));
 			mvprintw(floor->monsters[x]->position->y, floor->monsters[x]->position->x, "%s", floor->monsters[x]->avatar);
-			attroff(COLOR_PAIR(5));
+			attroff(COLOR_PAIR(floor->monsters[x]->color));
 		}
 
 	}
@@ -151,3 +158,12 @@ int movementSeeking(Position* start, Position* destination) {
 		return 1;
 	}
 }
+
+int killMonster(Monster* monster){
+	attron(COLOR_PAIR(monster->color));
+	mvprintw(monster->position->y, monster->position->x, ".");
+	attroff(COLOR_PAIR(monster->color));
+        monster->alive = 0;
+	beep();
+	return 1;
+}	

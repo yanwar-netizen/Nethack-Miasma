@@ -39,18 +39,22 @@ typedef struct Room {
 typedef struct Player {
 	
 	Position* position;
-	int Health;
-	int Mana;
+	int health;
+	int mana;
+	int attack;
 
 } Player;
 
 typedef struct Monster {
 
 	Position* position;
+	int alive;
 	int health;
-	char* avatar; 
+	char* avatar;
+        int attack;	
 	int movement;
 	int speed;
+	int color;
 
 } Monster;
 
@@ -60,7 +64,7 @@ int Screen();
 //For player setup
 Player* PlayerSetup();
 Position* ControlInput(char input, Player* user);
-int CheckPosition(Position *newPosition, Player* user, cchar_t** floor);
+int CheckPosition(Position *newPosition, Floor* floor);
 int MoveUser(Position *newPosition, Player* user, cchar_t** floor);
 
 //floor
@@ -78,13 +82,17 @@ int ConnectDoors(Position* DoorA, Position* DoorB);
 //monsters 
 int addMonsters(Floor* floor);
 Monster* selectMonster(int floor);
-Monster* createMonster(char* avatar, int health, int movement, int speed);
+Monster* createMonster(char* avatar, int health, int attack, int movement, int speed, int color);
 int monsterPos(Monster* monster, Room* room);
+int killMonster(Monster* monster);
 
 //monster movements
 int moveMonsters(Floor* floor);
 int movementSeeking(Position* start, Position* destination);
 int movementRandom(Position* start);
+
+//combat
+int combat(Player * player, Monster * monster, int first);
 
 
 #endif

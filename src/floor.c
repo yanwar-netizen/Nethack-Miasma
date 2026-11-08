@@ -14,6 +14,7 @@ Floor* createFloor(int floor) {
 
 	return newFloor;
 }
+
 //control area for room & door setup
 Room** RoomSetup() {
 	Room** rooms;
